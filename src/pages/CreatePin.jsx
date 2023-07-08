@@ -4,8 +4,11 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { db } from "../config/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, addDoc, collection } from "firebase/firestore";
+
 import Spinner from "../components/Spinner";
+import { storage } from "../config/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const categories = [
   {
@@ -84,48 +87,130 @@ const CreatePin = () => {
   const [postedBy, setPostedBy] = useState("");
   const [likes, setLikes] = useState([]);
   const [comments, setComments] = useState([]);
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [wrongImageType, setWrongImageType] = useState(false);
+
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingImageError, setUploadingImageError] = useState(null);
+
+  const types = [
+    "image/png",
+    "image/jpeg",
+    "image/jpg",
+    "image/svg",
+    "image/gif",
+    "image/tiff",
+  ];
 
   const navigate = useNavigate();
 
   const { user } = useContext(AuthContext);
 
-  const handleUploadImage = async (e) => {
+  const handleImage = (e) => {
+    if (e.target.files[0] && types.includes(e.target.files[0].type)) {
+      setImage(e.target.files[0]);
+      setWrongImageType(null);
+    } else {
+      setImage(null);
+      setWrongImageType(
+        "Please select an image file (png, jpeg, jpg, svg, gif, tiff)"
+      );
+    }
+    uploadImageToStorage(e.target.files[0]);
+  };
+
+  const uploadImageToStorage = async (image) => {
+    if (!image) return;
+    setUploadingImage(true);
+    try {
+      const storageRef = ref(storage, `images/${image.name}`);
+      await uploadBytes(storageRef, image);
+      const url = await getDownloadURL(storageRef);
+      setPhotoURL(url);
+    } catch (error) {
+      setUploadingImageError(
+        "Error uploading image, Refresh the page and try again."
+      );
+    }
+    setUploadingImage(false);
+  };
+
+  const handleUploadPin = async (e) => {
+    e.preventDefault();
     setLoading(true);
-    const file = e.target.files[0];
-    const storageRef = db.storage().ref();
-    const fileRef = storageRef.child(`images/${file.name}`);
-    await fileRef.put(file);
-    setPhotoURL(await fileRef.getDownloadURL());
+    try {
+      const docRef = await addDoc(collection(db, "pins"), {
+        title,
+        about,
+        destination,
+        category,
+        photoURL,
+        postedBy: user.uid,
+        likes,
+        comments,
+      });
+      navigate(`/pin-detail/${docRef.id}`);
+    } catch (error) {
+      setError("Error uploading pin, Refresh the page and try again.");
+    }
     setLoading(false);
   };
 
   return (
     <div className="flex flex-col justify-center items-center mt-5 lg:h-4/5">
       <div className="flex lg:flex-row flex-col justify-center items-center bg-white lg:p-5 p-3 lg:w-4/5 w-full">
-        <div className="p-3 flex w-full">
+        <div className="p-3 flex w-full ">
           <div className="flex justify-center flex-col border-2 border-dotted border-gray-300 p-3 w-full h-[420px]">
-            {loading && <Spinner />}
-            <label htmlFor="upload-image">
-              <div className="flex flex-col items-center justify-center h-full">
-                <div className="flex flex-col justify-center items-center">
-                  <p className="text-2xl font-bold">
-                    <AiOutlineCloudUpload />
+            {wrongImageType && <p>Wrong Image Type.</p>}
+            {!image ? (
+              <label htmlFor="upload-image">
+                <div className="flex flex-col items-center justify-center h-full">
+                  <div className="flex flex-col justify-center items-center">
+                    <p className="text-2xl font-bold">
+                      <AiOutlineCloudUpload />
+                    </p>
+                    <p className="text-lg">Click to upload image</p>
+                  </div>
+                  <p className="mt-32 text-gray-400 text-center">
+                    use high-quality JPG, PNG, SVG or GIF less than 20MB
                   </p>
-                  <p className="text-lg">Click to upload image</p>
                 </div>
-                <p className="mt-32 text-gray-400 text-center">
-                  use high-quality JPG, PNG, SVG or GIF less than 20MB
-                </p>
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={handleImage}
+                  accept="image/*"
+                  id="upload-image"
+                />
+              </label>
+            ) : uploadingImage ? (
+              <Spinner />
+            ) : uploadingImageError ? (
+              <p className="text-red-500 mb-5 text-xl text-center transition-all duration-150 ease-in ">
+                {uploadingImageError}
+              </p>
+            ) : (
+              <div className="relative h-full">
+                <img
+                  src={
+                    image
+                      ? URL.createObjectURL(image)
+                      : "https://via.placeholder.com/150"
+                  }
+                  alt="upload-image"
+                  className=" h-full w-full object-cover"
+                />
+                <button
+                  type="button"
+                  className="absolute bottom-3 right-3 p-3 rounded-full bg-white text-xl cursor-pointer outline-none hover:shadow-md transition-all duration-500 ease-in-out"
+                  onClick={() => setImage(null)}
+                >
+                  <MdDelete />
+                </button>
               </div>
-              <input
-                type="file"
-                name="upload-image"
-                className="hidden"
-                onChange={handleUploadImage}
-              />
-            </label>
+            )}
           </div>
         </div>
         <form className="flex flex-1 flex-col gap-6 lg:pl-5 mt-5 w-full">
@@ -184,13 +269,22 @@ const CreatePin = () => {
               </select>
             </div>
             <div className="flex justify-end items-end mt-5">
-              <button
-                type="button"
-                // onClick={handleUploadPin}
-                className="bg-red-500 text-white font-bold p-2 rounded-full w-28 outline-none"
-              >
-                Upload Pin
-              </button>
+              {loading ? (
+                <Spinner />
+              ) : error ? (
+                <p className="text-red-500 mb-5 text-xl text-center transition-all duration-150 ease-in ">
+                  {error}
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleUploadPin}
+                  className="bg-red-500 text-white font-bold p-2 rounded-full w-28 outline-none"
+                  disabled={uploadingImage}
+                >
+                  Upload Pin
+                </button>
+              )}
             </div>
           </div>
         </form>

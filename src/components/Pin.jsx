@@ -76,7 +76,7 @@ const Pin = ({ pin }) => {
         className="relative cursor-zoom-in w-auto hover:shadow-lg rounded-lg overflow-hidden transition-all duration-500 ease-out"
       >
         <img
-          src="https://images.pexels.com/photos/16952091/pexels-photo-16952091/free-photo-of-wood-landscape-field-summer.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+          src={`${pin?.photoURL}`}
           className="rounded-lg w-80"
           alt="user-post"
         />
