@@ -1,16 +1,13 @@
-import React, { useContext } from "react";
+import React from "react";
 import shareVideo from "../assets/share.mp4";
 import logo from "../assets/logowhite.png";
 import { FcGoogle } from "react-icons/fc";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth, db } from "../config/firebase";
-import { AuthContext } from "../contexts/authContext";
 import { useNavigate } from "react-router-dom";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const Login = () => {
-  const { setUser } = useContext(AuthContext);
-
   const navigate = useNavigate();
 
   const handleSignIn = async () => {
@@ -27,6 +24,7 @@ const Login = () => {
         photoURL: res.user.photoURL,
         displayName: res.user.displayName,
         createdAt: new Date(),
+        saves: [],
       });
     }
     navigate("/");
