@@ -68,7 +68,7 @@ const Pin = ({ pin }) => {
   };
 
   return (
-    <div className="w-max m-2">
+    <div className="w-full">
       <div
         onMouseEnter={() => setPostHovered(true)}
         onMouseLeave={() => setPostHovered(false)}
@@ -77,8 +77,11 @@ const Pin = ({ pin }) => {
       >
         <img
           src={`${pin?.photoURL}`}
-          className="rounded-lg w-80"
+          className={`rounded-lg w-full h-auto ${
+            postHovered && `brightness-50`
+          }`}
           alt="user-post"
+          loading="lazy"
         />
         {postHovered && (
           <div
@@ -101,7 +104,7 @@ const Pin = ({ pin }) => {
               {saved ? (
                 <button
                   type="button"
-                  className="bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none"
+                  className="bg-red-500  hover:opacity-75 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none"
                   onClick={(e) => e.stopPropagation()}
                 >
                   Saved
@@ -109,7 +112,7 @@ const Pin = ({ pin }) => {
               ) : (
                 <button
                   type="button"
-                  className="bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none"
+                  className="bg-red-500  hover:opacity-75 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none"
                   onClick={handleSavePin}
                 >
                   Save

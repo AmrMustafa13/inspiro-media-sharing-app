@@ -1,6 +1,6 @@
 import React from "react";
 import shareVideo from "../assets/share.mp4";
-import logo from "../assets/logowhite.png";
+import logo from "../assets/logotext.png";
 import { FcGoogle } from "react-icons/fc";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth, db } from "../config/firebase";

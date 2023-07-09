@@ -1,17 +1,16 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { HiMenu } from "react-icons/hi";
-import { AiFillCloseCircle } from "react-icons/ai";
+import { GrFormClose } from "react-icons/gr";
 import { Link, Route, Routes } from "react-router-dom";
 import UserProfile from "../components/UserProfile";
 import Sidebar from "../components/Sidebar";
 import Pins from "../components/Pins";
-import logo from "../assets/logo.png";
+import logo from "../assets/logotexticon.png";
 import { AuthContext } from "../contexts/authContext";
-import { auth } from "../config/firebase";
-import { signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Home = () => {
   const [toggleSidebar, setToggleSidebar] = useState(false);
@@ -21,8 +20,6 @@ const Home = () => {
   const { user } = useContext(AuthContext);
 
   const scrollRef = useRef(null);
-
-  const navigate = useNavigate();
 
   // useEffect(() => {
   //   const getUserData = async () => {
@@ -36,11 +33,6 @@ const Home = () => {
   useEffect(() => {
     scrollRef.current?.scrollTo(0, 0);
   }, []);
-
-  const handleSignOut = async () => {
-    await signOut(auth);
-    navigate("/login");
-  };
 
   return (
     <div className="flex bg-gray-50 md:flex-row flex-col h-screen transition duration-75 ease-out">
@@ -65,18 +57,34 @@ const Home = () => {
             />
           </Link>
         </div>
-        {toggleSidebar && (
-          <div className="fixed w-4/5 bg-white h-screen overflow-y-auto shadow-md z-10">
-            <div className="absolute w-full flex justify-end items-center p-2">
-              <AiFillCloseCircle
-                fontSize={30}
-                onClick={() => setToggleSidebar(false)}
-                className="cursor-pointer"
-              />
-            </div>
-            <Sidebar setToggleSidebar={setToggleSidebar} />
-          </div>
-        )}
+        <AnimatePresence>
+          {toggleSidebar && (
+            <motion.div
+              className="fixed w-2/3 bg-white h-screen overflow-y-auto shadow-md z-10"
+              initial={{
+                x: "-100%",
+              }}
+              animate={{
+                x: 0,
+              }}
+              transition={{
+                duration: 0.3,
+              }}
+              exit={{
+                x: "-100%",
+              }}
+            >
+              <div className="absolute w-full flex justify-end items-center p-2">
+                <GrFormClose
+                  fontSize={30}
+                  onClick={() => setToggleSidebar(false)}
+                  className="cursor-pointer m-4"
+                />
+              </div>
+              <Sidebar setToggleSidebar={setToggleSidebar} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
       <div className="pb-2 flex-1 h-screen overflow-y-scroll" ref={scrollRef}>
         <Routes>
@@ -84,7 +92,6 @@ const Home = () => {
           <Route path="/*" element={<Pins />} />
         </Routes>
       </div>
-      {/* <button onClick={handleSignOut}>Sign Out</button> */}
     </div>
   );
 };
