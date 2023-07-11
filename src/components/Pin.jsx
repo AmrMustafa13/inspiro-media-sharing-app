@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 import { AuthContext } from "../contexts/authContext";
 import Avatar from "../assets/avatar.png";
+import LazyLoad from "react-lazy-load";
 
 const Pin = ({ pin }) => {
   const [postHovered, setPostHovered] = useState(false);
@@ -92,14 +93,15 @@ const Pin = ({ pin }) => {
         onClick={() => navigate(`/pin-detail/${pin.id}`)}
         className="relative cursor-zoom-in w-auto hover:shadow-lg rounded-lg overflow-hidden transition-all duration-500 ease-out"
       >
-        <img
-          src={`${pin?.photoURL}`}
-          className={`rounded-lg w-full h-auto ${
-            postHovered && `brightness-50`
-          }`}
-          alt="user-post"
-          loading="lazy"
-        />
+        <LazyLoad height={200} offsetVertical={200}>
+          <img
+            src={`${pin?.photoURL}`}
+            className={`rounded-lg w-full h-auto ${
+              postHovered && `brightness-50`
+            }`}
+            alt="user-post"
+          />
+        </LazyLoad>
         {postHovered && (
           <div
             className="absolute top-0 left-0 w-full h-full flex flex-col justify-between p-1 pr-2 pt-2 pb-2 z-50"
@@ -170,7 +172,7 @@ const Pin = ({ pin }) => {
       >
         <img
           className="w-8 h-8 rounded-full object-cover"
-          src={postedByUserData?.photoURL || Avatar}
+          src={postedByUserData?.photoURL}
           alt="user-profile"
         />
         <p className="font-semibold capitalize">

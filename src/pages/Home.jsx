@@ -22,15 +22,6 @@ const Home = () => {
 
   const scrollRef = useRef(null);
 
-  // useEffect(() => {
-  //   const getUserData = async () => {
-  //     const userDoc = doc(db, "users", user?.uid);
-  //     const userDocSnap = await getDoc(userDoc);
-  //     setUserData(userDocSnap.data());
-  //   };
-  //   getUserData();
-  // }, [user]);
-
   useEffect(() => {
     scrollRef.current?.scrollTo(0, 0);
   }, []);
@@ -52,7 +43,7 @@ const Home = () => {
           </Link>
           <Link to={`user-profile/${user?.uid}`}>
             <img
-              src={user?.photoURL || Avatar}
+              src={user?.photoURL}
               alt="logo"
               className="w-10 h-10 rounded-full"
             />

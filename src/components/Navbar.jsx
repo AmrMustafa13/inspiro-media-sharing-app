@@ -27,7 +27,7 @@ const Navbar = ({ searchQuery, setSearchQuery }) => {
       <div className="flex gap-3">
         <Link to={`/user-profile/${user?.uid}`}>
           <img
-            src={user.photoURL || Avatar}
+            src={user.photoURL}
             alt="user-image"
             className="w-14 h-12 rounded-lg object-cover"
           />

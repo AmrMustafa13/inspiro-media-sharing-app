@@ -83,7 +83,7 @@ const UserProfile = () => {
               className="w-full h-[370px] 2xl:h-[510px] shadow-lg object-cover"
             />
             <img
-              src={userData?.photoURL || Avatar}
+              src={userData?.photoURL}
               alt="user-pic"
               className="rounded-full w-20 h-20 -mt-10 shadow-xl shadow-gray-300  object-cover"
             />

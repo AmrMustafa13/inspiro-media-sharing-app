@@ -148,7 +148,7 @@ const Sidebar = ({ setToggleSidebar }) => {
             onClick={handleCloseSidebar}
           >
             <img
-              src={user.photoURL || Avatar}
+              src={user.photoURL}
               alt={user.displayName}
               className="w-10 h-10 rounded-full"
             />
