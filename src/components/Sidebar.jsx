@@ -4,11 +4,9 @@ import { RiHomeFill } from "react-icons/ri";
 import { IoIosArrowForward } from "react-icons/io";
 import logo from "../assets/logotexticon.png";
 import { AuthContext } from "../contexts/authContext";
-import { GrClose } from "react-icons/gr";
 import { IoLogOutOutline } from "react-icons/io5";
 import { auth } from "../config/firebase";
 import { signOut } from "firebase/auth";
-import Avatar from "../assets/avatar.png";
 
 const categories = [
   {

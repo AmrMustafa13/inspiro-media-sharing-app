@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { MdDownloadForOffline } from "react-icons/md";
 import { Link, useParams } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
 import MasonryLayout from "../components/MasonryLayout";
 import {
   doc,
@@ -16,7 +15,7 @@ import {
 import { db } from "../config/firebase";
 import Spinner from "../components/Spinner";
 import { AuthContext } from "../contexts/authContext";
-import Avatar from "../assets/avatar.png";
+import { motion } from "framer-motion";
 
 const PinDetail = () => {
   const { pinId } = useParams();
@@ -130,10 +129,13 @@ const PinDetail = () => {
         }}
       >
         <div className="flex justify-center items-center md:items-start flex-initial">
-          <img
+          <motion.img
             src={pin?.photoURL}
             className="rounded-t-3xl rounded-b-lg"
             alt="user-post"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
           />
         </div>
         <div className="w-full p-5 flex-1 xl:min-w-[620px]">

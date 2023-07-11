@@ -4,7 +4,7 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { db } from "../config/firebase";
-import { doc, setDoc, addDoc, collection } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 
 import Spinner from "../components/Spinner";
 import { storage } from "../config/firebase";
@@ -84,9 +84,8 @@ const CreatePin = () => {
   const [destination, setDestination] = useState("");
   const [category, setCategory] = useState("");
   const [photoURL, setPhotoURL] = useState("");
-  const [postedBy, setPostedBy] = useState("");
-  const [likes, setLikes] = useState([]);
-  const [comments, setComments] = useState([]);
+  const [likes] = useState([]);
+  const [comments] = useState([]);
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

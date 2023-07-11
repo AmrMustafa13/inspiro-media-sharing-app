@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoMdAdd, IoMdSearch } from "react-icons/io";
 import { AuthContext } from "../contexts/authContext";
-import Avatar from "../assets/avatar.png";
 
 const Navbar = ({ searchQuery, setSearchQuery }) => {
   const { user } = useContext(AuthContext);

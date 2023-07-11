@@ -7,16 +7,10 @@ import Sidebar from "../components/Sidebar";
 import Pins from "../components/Pins";
 import logo from "../assets/logotexticon.png";
 import { AuthContext } from "../contexts/authContext";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../config/firebase";
-import { useNavigate, Navigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import Avatar from "../assets/avatar.png";
 
 const Home = () => {
   const [toggleSidebar, setToggleSidebar] = useState(false);
-
-  // const [userData, setUserData] = useState(null);
 
   const { user } = useContext(AuthContext);
 

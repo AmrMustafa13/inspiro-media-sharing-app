@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Spinner from "./Spinner";
 import { db } from "../config/firebase";
 import {
   doc,
-  getDoc,
   getDocs,
   collection,
   onSnapshot,
   query,
-  where,
 } from "firebase/firestore";
 import MasonryLayout from "./MasonryLayout";
-import Avatar from "../assets/avatar.png";
 
 const activeBtnStyles =
   "bg-red-500 text-white font-bold p-2 rounded-full w-20 outline-none";

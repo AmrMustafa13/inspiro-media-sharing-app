@@ -12,11 +12,10 @@ import {
   onSnapshot,
   query,
   deleteDoc,
-  where,
 } from "firebase/firestore";
 import { AuthContext } from "../contexts/authContext";
-import Avatar from "../assets/avatar.png";
 import LazyLoad from "react-lazy-load";
+import { motion } from "framer-motion";
 
 const Pin = ({ pin }) => {
   const [postHovered, setPostHovered] = useState(false);
@@ -93,13 +92,16 @@ const Pin = ({ pin }) => {
         onClick={() => navigate(`/pin-detail/${pin.id}`)}
         className="relative cursor-zoom-in w-auto hover:shadow-lg rounded-lg overflow-hidden transition-all duration-500 ease-out"
       >
-        <LazyLoad height={200} offsetVertical={200}>
-          <img
+        <LazyLoad offset={800}>
+          <motion.img
             src={`${pin?.photoURL}`}
             className={`rounded-lg w-full h-auto ${
               postHovered && `brightness-50`
             }`}
             alt="user-post"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5 }}
           />
         </LazyLoad>
         {postHovered && (
