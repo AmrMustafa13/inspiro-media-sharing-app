@@ -29,26 +29,7 @@ const UserProfile = () => {
   const [activeBtn, setActiveBtn] = useState("Created");
   const [createdPins, setCreatedPins] = useState([]);
   const [savedPins, setSavedPins] = useState([]);
-
-  const navigate = useNavigate();
-
-  // useEffect(() => {
-  // const getUserData = async () => {
-  //   const userDoc = doc(db, "users", userId);
-  //   const userDocSnap = await getDoc(userDoc);
-  //   if (userDocSnap.exists()) {
-  //     setUserData(userDocSnap.data());
-  //   } else {
-  //     console.log("No such document!");
-  //   }
-  // };
-  // getUserData();
-  // const q = query(doc(db, "users", userId));
-  // const unsubscribe = onSnapshot(q, (doc) => {
-  //   setUserData(doc.data());
-  // }
-  // return unsubscribe;
-  // }, [userId]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const q = query(doc(db, "users", userId));
@@ -61,6 +42,7 @@ const UserProfile = () => {
   }, [userId]);
 
   useEffect(() => {
+    setLoading(true);
     if (btnText === "Created") {
       // filter the pins posted by the current user
       const fetchCreatedPins = async () => {
@@ -70,6 +52,7 @@ const UserProfile = () => {
           .filter((doc) => doc.data().postedBy === userId)
           .map((doc) => ({ ...doc.data(), id: doc.id }));
         setCreatedPins(pinsList);
+        setLoading(false);
       };
       fetchCreatedPins();
     }
@@ -83,6 +66,7 @@ const UserProfile = () => {
           .filter((doc) => savedPinsIds.includes(doc.id))
           .map((doc) => ({ ...doc.data(), id: doc.id }));
         setSavedPins(pinsList);
+        setLoading(false);
       };
       fetchSavedPins();
     }
@@ -133,11 +117,15 @@ const UserProfile = () => {
               Saved
             </button>
           </div>
-          <div className="px-2">
-            <MasonryLayout
-              pins={btnText === "Created" ? createdPins : savedPins}
-            />
-          </div>
+          {loading ? (
+            <Spinner />
+          ) : (
+            <div className="px-2">
+              <MasonryLayout
+                pins={btnText === "Created" ? createdPins : savedPins}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

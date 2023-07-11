@@ -39,10 +39,7 @@ const Feed = () => {
     return () => unsubscibe();
   }, [categoryId]);
 
-  if (loading)
-    return (
-      <Spinner message="We are fetching the pins for you. Please wait..." />
-    );
+  if (loading) return <Spinner message="Please wait..." />;
 
   return <div>{pins && <MasonryLayout pins={pins} />}</div>;
 };

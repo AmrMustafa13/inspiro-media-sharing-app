@@ -24,3 +24,8 @@
 ::-webkit-scrollbar-track:hover {
   background-color: #e6e6e6;
 }
+
+body {
+  font-family: "Roboto", sans-serif;
+  width: 100%;
+}
