@@ -5,8 +5,17 @@ import { MdDownloadForOffline } from "react-icons/md";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
 import { db } from "../config/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  onSnapshot,
+  query,
+  deleteDoc,
+  where,
+} from "firebase/firestore";
 import { AuthContext } from "../contexts/authContext";
+import Avatar from "../assets/avatar.png";
 
 const Pin = ({ pin }) => {
   const [postHovered, setPostHovered] = useState(false);
@@ -19,12 +28,13 @@ const Pin = ({ pin }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getUserData = async () => {
-      const userDoc = doc(db, "users", user?.uid);
-      const userDocSnap = await getDoc(userDoc);
-      setUserData(userDocSnap.data());
+    const q = query(doc(db, "users", user?.uid));
+    const unsubscribe = onSnapshot(q, (doc) => {
+      setUserData(doc.data());
+    });
+    return () => {
+      unsubscribe();
     };
-    getUserData();
   }, [user]);
 
   useEffect(() => {
@@ -51,7 +61,7 @@ const Pin = ({ pin }) => {
     }
   };
 
-  const handleDeletePin = async (e) => {
+  const handleUnsavePin = async (e) => {
     e.stopPropagation();
     const userDoc = doc(db, "users", user?.uid);
     const userSnap = await getDoc(userDoc);
@@ -65,6 +75,13 @@ const Pin = ({ pin }) => {
         saves: filteredPins,
       });
     }
+  };
+
+  // remove the pin from pins collection
+  const handleDeletePin = async (e) => {
+    e.stopPropagation();
+    const pinDoc = doc(db, "pins", pin.id);
+    await deleteDoc(pinDoc);
   };
 
   return (
@@ -105,7 +122,7 @@ const Pin = ({ pin }) => {
                 <button
                   type="button"
                   className="bg-red-500  hover:opacity-75 text-white font-bold px-5 py-1 text-base rounded-3xl hover:shadow-md outline-none"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={handleUnsavePin}
                 >
                   Saved
                 </button>
@@ -153,7 +170,7 @@ const Pin = ({ pin }) => {
       >
         <img
           className="w-8 h-8 rounded-full object-cover"
-          src={postedByUserData?.photoURL}
+          src={postedByUserData?.photoURL || Avatar}
           alt="user-profile"
         />
         <p className="font-semibold capitalize">

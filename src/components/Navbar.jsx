@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoMdAdd, IoMdSearch } from "react-icons/io";
 import { AuthContext } from "../contexts/authContext";
+import Avatar from "../assets/avatar.png";
 
 const Navbar = ({ searchQuery, setSearchQuery }) => {
   const { user } = useContext(AuthContext);
@@ -26,7 +27,7 @@ const Navbar = ({ searchQuery, setSearchQuery }) => {
       <div className="flex gap-3">
         <Link to={`/user-profile/${user?.uid}`}>
           <img
-            src={user.photoURL}
+            src={user.photoURL || Avatar}
             alt="user-image"
             className="w-14 h-12 rounded-lg object-cover"
           />

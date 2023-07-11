@@ -8,6 +8,7 @@ import { GrClose } from "react-icons/gr";
 import { IoLogOutOutline } from "react-icons/io5";
 import { auth } from "../config/firebase";
 import { signOut } from "firebase/auth";
+import Avatar from "../assets/avatar.png";
 
 const categories = [
   {
@@ -147,7 +148,7 @@ const Sidebar = ({ setToggleSidebar }) => {
             onClick={handleCloseSidebar}
           >
             <img
-              src={user.photoURL}
+              src={user.photoURL || Avatar}
               alt={user.displayName}
               className="w-10 h-10 rounded-full"
             />

@@ -29,6 +29,18 @@ const Pins = () => {
               />
             }
           />
+          <Route
+            path="*"
+            element={
+              <h1
+                className="
+          text-3xl text-center font-bold text-gray-500 mt-10
+          "
+              >
+                Page Not Found
+              </h1>
+            }
+          />
         </Routes>
       </div>
     </div>

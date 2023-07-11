@@ -2,15 +2,24 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Spinner from "./Spinner";
 import { db } from "../config/firebase";
-import { doc, getDoc, getDocs, collection } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  getDocs,
+  collection,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import MasonryLayout from "./MasonryLayout";
+import Avatar from "../assets/avatar.png";
 
 const activeBtnStyles =
   "bg-red-500 text-white font-bold p-2 rounded-full w-20 outline-none";
 const notActiveBtnStyles =
   "bg-primary mr-4 text-black font-bold p-2 rounded-full w-20 outline-none";
 
-const randomImage = "https://source.unsplash.com/1600x900/?technology,nature";
+const randomImage = "https://source.unsplash.com/1600x900/?nature";
 
 const UserProfile = () => {
   const { userId } = useParams();
@@ -23,17 +32,32 @@ const UserProfile = () => {
 
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  // const getUserData = async () => {
+  //   const userDoc = doc(db, "users", userId);
+  //   const userDocSnap = await getDoc(userDoc);
+  //   if (userDocSnap.exists()) {
+  //     setUserData(userDocSnap.data());
+  //   } else {
+  //     console.log("No such document!");
+  //   }
+  // };
+  // getUserData();
+  // const q = query(doc(db, "users", userId));
+  // const unsubscribe = onSnapshot(q, (doc) => {
+  //   setUserData(doc.data());
+  // }
+  // return unsubscribe;
+  // }, [userId]);
+
   useEffect(() => {
-    const getUserData = async () => {
-      const userDoc = doc(db, "users", userId);
-      const userDocSnap = await getDoc(userDoc);
-      if (userDocSnap.exists()) {
-        setUserData(userDocSnap.data());
-      } else {
-        console.log("No such document!");
-      }
+    const q = query(doc(db, "users", userId));
+    const unsubscribe = onSnapshot(q, (doc) => {
+      setUserData(doc.data());
+    });
+    return () => {
+      unsubscribe();
     };
-    getUserData();
   }, [userId]);
 
   useEffect(() => {
@@ -62,7 +86,7 @@ const UserProfile = () => {
       };
       fetchSavedPins();
     }
-  }, [btnText, userId]);
+  }, [btnText, userId, userData?.saves]);
 
   return (
     <div className="relative pb-2 h-full justify-center items-center">
@@ -75,7 +99,7 @@ const UserProfile = () => {
               className="w-full h-[370px] 2xl:h-[510px] shadow-lg object-cover"
             />
             <img
-              src={userData?.photoURL}
+              src={userData?.photoURL || Avatar}
               alt="user-pic"
               className="rounded-full w-20 h-20 -mt-10 shadow-xl shadow-gray-300  object-cover"
             />

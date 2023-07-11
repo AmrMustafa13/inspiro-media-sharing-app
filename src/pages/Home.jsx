@@ -11,6 +11,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { useNavigate, Navigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import Avatar from "../assets/avatar.png";
 
 const Home = () => {
   const [toggleSidebar, setToggleSidebar] = useState(false);
@@ -51,7 +52,7 @@ const Home = () => {
           </Link>
           <Link to={`user-profile/${user?.uid}`}>
             <img
-              src={user?.photoURL}
+              src={user?.photoURL || Avatar}
               alt="logo"
               className="w-10 h-10 rounded-full"
             />

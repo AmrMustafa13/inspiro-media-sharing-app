@@ -2,7 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../config/firebase";
 
 const Feed = () => {
@@ -13,29 +20,23 @@ const Feed = () => {
 
   useEffect(() => {
     setLoading(true);
-    if (categoryId) {
-      const getPins = async () => {
-        const pinsCol = collection(db, "pins");
-        const pinsSnapshot = await getDocs(pinsCol);
-        const pinsList = pinsSnapshot.docs
-          .filter((doc) => doc.data().category === categoryId)
-          .map((doc) => ({ ...doc.data(), id: doc.id }));
-        setPins(pinsList);
-      };
-      getPins();
-    } else {
-      const getPins = async () => {
-        const pinsCol = collection(db, "pins");
-        const pinsSnapshot = await getDocs(pinsCol);
-        const pinsList = pinsSnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setPins(pinsList);
-      };
-      getPins();
-    }
-    setLoading(false);
+    const pinsCol = collection(db, "pins");
+
+    const unsubscibe = onSnapshot(
+      categoryId
+        ? query(pinsCol, where("category", "==", categoryId))
+        : query(pinsCol),
+      (snapshot) => {
+        const docs = [];
+        snapshot.forEach((doc) => {
+          docs.push({ ...doc.data(), id: doc.id });
+        });
+        setPins(docs);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscibe();
   }, [categoryId]);
 
   if (loading)
