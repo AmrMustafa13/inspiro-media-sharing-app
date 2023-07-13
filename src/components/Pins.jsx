@@ -22,12 +22,7 @@ const Pins = () => {
           <Route path="/create-pin" element={<CreatePin />} />
           <Route
             path="/search"
-            element={
-              <Search
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-              />
-            }
+            element={<Search searchQuery={searchQuery} />}
           />
           <Route
             path="*"

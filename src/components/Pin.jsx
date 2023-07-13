@@ -16,12 +16,14 @@ import {
 import { AuthContext } from "../contexts/authContext";
 import LazyLoad from "react-lazy-load";
 import { motion } from "framer-motion";
+import DeleteModal from "./DeleteModal";
 
 const Pin = ({ pin }) => {
   const [postHovered, setPostHovered] = useState(false);
 
   const [userData, setUserData] = useState(null);
   const [postedByUserData, setPostedByUserData] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const { user } = useContext(AuthContext);
 
@@ -82,10 +84,17 @@ const Pin = ({ pin }) => {
     e.stopPropagation();
     const pinDoc = doc(db, "pins", pin.id);
     await deleteDoc(pinDoc);
+    setDeleteModalOpen(false);
   };
 
   return (
     <div className="w-full">
+      {deleteModalOpen && (
+        <DeleteModal
+          handleDeletePin={handleDeletePin}
+          setDeleteModalOpen={setDeleteModalOpen}
+        />
+      )}
       <div
         onMouseEnter={() => setPostHovered(true)}
         onMouseLeave={() => setPostHovered(false)}
@@ -150,16 +159,19 @@ const Pin = ({ pin }) => {
                   onClick={(e) => e.stopPropagation()}
                 >
                   <BsFillArrowUpRightCircleFill />
-                  {pin?.destination.length > 20
-                    ? pin?.destination.slice(8, 20)
-                    : pin?.destination.slice(8)}
+                  {pin?.destination.length > 15
+                    ? `${pin?.destination.substring(0, 15)}...`
+                    : pin?.destination}
                 </a>
               )}
               {pin?.postedBy === user?.uid && (
                 <button
                   type="button"
                   className="bg-white w-9 h-9 rounded-full flex items-center justify-center text-black text-xl opacity-75 hover:opacity-100 hover:shadow-md outline-none"
-                  onClick={handleDeletePin}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeleteModalOpen(true);
+                  }}
                 >
                   <AiTwotoneDelete />
                 </button>

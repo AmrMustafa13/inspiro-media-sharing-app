@@ -19,7 +19,7 @@ const MasonryLayout = ({ pins }) => {
         mb-20
         "
           >
-            No pins found.
+            No pins available.
           </p>
         )}
         {pins?.map((pin) => (

@@ -58,7 +58,7 @@ const PinDetail = () => {
         id: doc.id,
       }));
       const moreLikeThis = pins.filter(
-        (pin) => pin.category === pin.category && pin.id !== pinId
+        (item) => item.category === pin?.category && item.id !== pinId
       );
       setMoreLikeThis(moreLikeThis);
     };
@@ -216,7 +216,7 @@ const PinDetail = () => {
           </form>
         </div>
       </div>
-      {moreLikeThis.length > 0 ? (
+      {moreLikeThis?.length > 0 ? (
         <>
           <h2 className="text-center font-bold text-2xl my-8 mb-4">
             More Like This
@@ -224,7 +224,9 @@ const PinDetail = () => {
           <MasonryLayout pins={moreLikeThis} />
         </>
       ) : (
-        <Spinner message="Loading More Like This Pins..." />
+        <h2 className="text-center font-bold text-2xl my-8 mb-4">
+          No More Like This
+        </h2>
       )}
     </>
   );
