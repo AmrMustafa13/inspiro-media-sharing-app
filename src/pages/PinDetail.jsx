@@ -16,6 +16,7 @@ import { db } from "../config/firebase";
 import Spinner from "../components/Spinner";
 import { AuthContext } from "../contexts/authContext";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 
 const PinDetail = () => {
   const { pinId } = useParams();
@@ -25,7 +26,7 @@ const PinDetail = () => {
   const [pin, setPin] = useState(null);
   const [moreLikeThis, setMoreLikeThis] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [comment, setComment] = useState([]);
+  const [comment, setComment] = useState("");
   const [postedByUserData, setPostedByUserData] = useState([]);
   const [pinNotExists, setPinNotExists] = useState(false);
   const [addingComment, setAddingComment] = useState(false);
@@ -93,6 +94,10 @@ const PinDetail = () => {
 
   const handleAddComment = async (e) => {
     e.preventDefault();
+
+    if (comment.trim() === "")
+      return toast.error("Comment can't be empty", { position: "top-center" });
+
     setAddingComment(true);
     const newComment = {
       userId: user?.uid,

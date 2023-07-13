@@ -5,7 +5,7 @@ import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { db } from "../config/firebase";
 import { addDoc, collection } from "firebase/firestore";
-
+import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 import { storage } from "../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -71,6 +71,13 @@ const CreatePin = () => {
 
   const handleUploadPin = async (e) => {
     e.preventDefault();
+
+    if (!title || !about || !destination || !category || !photoURL) {
+      return toast.error("Please fill all the fields.", {
+        position: "top-center",
+      });
+    }
+
     setLoading(true);
     try {
       const docRef = await addDoc(collection(db, "pins"), {

@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 import { MdDownloadForOffline } from "react-icons/md";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
@@ -20,6 +20,8 @@ import DeleteModal from "./DeleteModal";
 
 const Pin = ({ pin }) => {
   const [postHovered, setPostHovered] = useState(false);
+
+  const location = useLocation();
 
   const [userData, setUserData] = useState(null);
   const [postedByUserData, setPostedByUserData] = useState(null);
@@ -84,6 +86,13 @@ const Pin = ({ pin }) => {
     e.stopPropagation();
     const pinDoc = doc(db, "pins", pin.id);
     await deleteDoc(pinDoc);
+    if (location.pathname.includes("user-profile")) {
+      toast.success(
+        "Pin deleted successfully, refresh the page to see changes"
+      );
+    } else {
+      toast.success("Pin deleted successfully");
+    }
     setDeleteModalOpen(false);
   };
 

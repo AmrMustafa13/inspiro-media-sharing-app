@@ -18,7 +18,7 @@ const DeleteModal = ({ handleDeletePin, setDeleteModalOpen }) => {
     "
     >
       <div
-        className="bg-white w-4/5 h-64 rounded-lg
+        className="bg-white w-2/3 h-64 rounded-lg
         flex
         flex-col
         justify-center
